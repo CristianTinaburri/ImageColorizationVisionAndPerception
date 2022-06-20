@@ -14,7 +14,7 @@ class ResNetBackbone18(nn.Module):
 
     self.resnet_backbone = nn.Sequential(*list(resnet.children())[0:6])
 
-    for param in self.midlevel_resnet.parameters():
+    for param in self.resnet_backbone.parameters():
       param.requires_grad = False
 
     self.custom_layer = nn.Sequential(     
@@ -46,6 +46,6 @@ class ResNetBackbone18(nn.Module):
 
     resnet_backbone = self.resnet_backbone(input)
 
-    output = self.custom_layer(midlevel_features)
+    output = self.custom_layer(resnet_backbone)
     
     return output
