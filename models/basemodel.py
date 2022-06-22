@@ -12,7 +12,7 @@ class basemodel(nn.Module):
       nn.Conv2d(1, 64, kernel_size=3, stride=1, padding=1),
       nn.BatchNorm2d(64),
       nn.ReLU(),
-      nn.ConvTranspose2d(64, 64, kernel_size=2, stride=2),
+      nn.ConvTranspose2d(64, 64, kernel_size=1, stride=1),
 
       nn.Conv2d(64, 64, kernel_size=3, stride=1, padding=1),
       nn.BatchNorm2d(64),
@@ -22,15 +22,15 @@ class basemodel(nn.Module):
       nn.Conv2d(64, 32, kernel_size=3, stride=1, padding=1),
       nn.BatchNorm2d(32),
       nn.ReLU(),
-      nn.ConvTranspose2d(32, 64, kernel_size=2, stride=2),
+      nn.ConvTranspose2d(32, 64, kernel_size=1, stride=1),
 
       nn.Conv2d(64, 32, kernel_size=3, stride=1, padding=1),
       nn.BatchNorm2d(32),
       nn.ReLU(),
       nn.Dropout(0.5),
       
-      nn.Conv2d(32, 2, kernel_size=3, stride=1, padding=0),
-      nn.ConvTranspose2d(2, 2, kernel_size=2, stride=2),
+      nn.Conv2d(32, 2, kernel_size=3, stride=1, padding=1),
+      nn.ConvTranspose2d(2, 2, kernel_size=1, stride=1),
     )
 
   def forward(self, input):
