@@ -38,7 +38,7 @@ class ResNetBackbone18(nn.Module):
       nn.ReLU(),
       nn.Dropout(0.5),
       
-      nn.Conv2d(32, 2, kernel_size=3, stride=1, padding=0),
+      nn.Conv2d(32, 2, kernel_size=3, stride=1, padding=1),
       nn.ConvTranspose2d(2, 2, kernel_size=2, stride=2),
     )
 
