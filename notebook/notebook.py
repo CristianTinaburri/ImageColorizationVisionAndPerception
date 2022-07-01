@@ -267,8 +267,6 @@ with torch.no_grad():
     predicted_lab_batch = []
 
     # predice il canale l dell'immagine
-    print(lab_batch[:, 0:1, :, :].shape)
-    print(model(lab_batch[:, 0:1, :, :]).shape)
     predicted_lab_batch = torch.cat([lab_batch[:, 0:1, :, :], model(lab_batch[:, 0:1, :, :])], dim=1)
 
     # porta il batch sulla cpu
