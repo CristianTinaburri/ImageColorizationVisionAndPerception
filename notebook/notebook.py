@@ -7,7 +7,9 @@ Original file is located at
     https://colab.research.google.com/drive/1KCSejByupBqFHVx9dAfQJlba_8SkGegd
 
 # How to run
-Run all cells using the combination CTRL + F9, images will be visualized using the best trained model "updatedmodel", the images will be outputed in the "Visualizing images" section. You can change the hyperparameters for the training in the hyperparameters sections, just set the variable TRAIN to True.
+Run all cells using the combination CTRL + F9, images will be visualized using the best trained model "updatedmodel", the images will be outputed in the "Visualizing images" section. You can change the hyperparameters for the training in the hyperparameters section, just set the variable TRAIN to True, same for testing ( TEST variable ).
+
+Note: train, test and visualization functions code is taken in part from https://colab.research.google.com/github/smartgeometry-ucl/dl4g/blob/master/colorization.ipynb#scrollTo=YDbY6pf2VU5T and adjusted to fit the use cases of this project.
 
 ### ENVIROMENT SETUP
 """
@@ -60,7 +62,7 @@ import copy
 
 """### Hyperparameters"""
 
-IMG_SIZE = 256       # image size
+IMG_SIZE = 32       # image size
 num_epochs = 250       # number of epochs to be performed during training
 batch_size = 50        # batch size
 learning_rate = 2e-4      # learning rate
@@ -70,18 +72,16 @@ weight_decay = 2.5e-5     # weight_decay
 
 use_gpu = True          # use_gpu
 num_workers = 2          # num_workers
-TRANSFORM_DATA = True      # apply transform to data
-TRANSFORM_DATA_MECHANICALLY = False # apply image transformation on dataset
+TRANSFORM_DATA = False      # apply transform to data
 DATASET = "CIFAR"          # the dataset you want to use for training
 MODEL_NAME = "updated_model" + ".pth"    # name of model to save
-MODEL_PATH_SAVE = "/content/gdrive/MyDrive/Computer Vision Project/Models/End Models/" + MODEL_NAME + "/" # where to save model
+PATH_TO_SAVE_MODEL = "/content/gdrive/MyDrive/Computer Vision Project/Models/End Models/"   # where to save the model
+MODEL_PATH_SAVE =  PATH_TO_SAVE_MODEL + MODEL_NAME + "/"    # complete variable to where to save the model
 NUM_EPOCH_MODEL_SAVE = 5       # how many epoch to save model
 TEST_EPOCHS = 10        # the number of epoch after it need to be tested
 LOAD_MODEL = True   # if the model needs to be loaded
 TRAIN = False   # if the model needs to be trained
-
-if not os.path.isdir(MODEL_PATH_SAVE):
-  os.mkdir(MODEL_PATH_SAVE)
+TEST = False    # if the model needs to be tested
 
 """### Dataset Functions"""
 
@@ -158,7 +158,7 @@ from torchvision import models
 from torchsummary import summary
 
 # Get summary of model architecture
-# summary(model, (1,32,32))
+summary(model, (1,32,32))
 
 if LOAD_MODEL == True:
   MODEL_PATH_TO_LOAD = "/content/models/pretrained/" + MODEL_NAME
@@ -218,25 +218,26 @@ if TRAIN == True:
 
 """### Testing"""
 
-model.eval()
+if TEST == True:
+  model.eval()
 
-test_loss_avg, num_batches = 0, 0
+  test_loss_avg, num_batches = 0, 0
 
-for l, ab in test_dataloader:
+  for l, ab in test_dataloader:
 
-    with torch.no_grad():
+      with torch.no_grad():
 
-        l, ab = l.to(device), ab.to(device)
+          l, ab = l.to(device), ab.to(device)
 
-        predicted_ab_batch = model(l)
-        
-        loss = loss_function(predicted_ab_batch, ab)
+          predicted_ab_batch = model(l)
+          
+          loss = loss_function(predicted_ab_batch, ab)
 
-        test_loss_avg += loss.item()
-        num_batches += 1
-    
-test_loss_avg /= num_batches
-print('average loss: %f' % (test_loss_avg))
+          test_loss_avg += loss.item()
+          num_batches += 1
+      
+  test_loss_avg /= num_batches
+  print('average loss: %f' % (test_loss_avg))
 
 """### Visualizing images"""
 
@@ -266,6 +267,8 @@ with torch.no_grad():
     predicted_lab_batch = []
 
     # predice il canale l dell'immagine
+    print(lab_batch[:, 0:1, :, :].shape)
+    print(model(lab_batch[:, 0:1, :, :]).shape)
     predicted_lab_batch = torch.cat([lab_batch[:, 0:1, :, :], model(lab_batch[:, 0:1, :, :])], dim=1)
 
     # porta il batch sulla cpu
