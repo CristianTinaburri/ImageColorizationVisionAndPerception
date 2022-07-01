@@ -36,32 +36,32 @@ def get_number_of_images():
 def save_predictions(images_to_save=10):
 
   with torch.no_grad():
-  ######################### start mio codice #################################
-
+  
+    # the number of the images you want to be predicted ( the same you want to be saved )
     number_of_images_grid = images_to_save
 
-    # BATCH DI TEST DI 10 IMMAGINI
-    # ritorna un array con 10 numeri casuali 
+    # returns an array of random numbers of size of the variable number_of_images_grid
     image_inds = np.random.choice(len(test_set), number_of_images_grid, replace=False)
 
-    # ritorna un tensore cone i 10 elementi casuali
+    # return a tensor with random elements of the size of the variable number_of_images_grid
     lab_batch = torch.stack([torch.cat([test_set[i][0], test_set[i][1]], dim=0) for i in image_inds])
 
-    # porta il lab_batch su gpu
+    # ports lab_batch on the gpu
     lab_batch = lab_batch.to(device)
 
-    # dichiaro lista per le immagini da predirre
+    # declaring the list that will contain the images to be predicted
     predicted_lab_batch = []
 
-    # predice il canale l dell'immagine
+    # predicts the AB channels of the images using the trained model
     predicted_lab_batch = torch.cat([lab_batch[:, 0:1, :, :], model(lab_batch[:, 0:1, :, :])], dim=1)
 
-    # porta il batch sulla cpu
+    # ports lab_batch on the cpu
     lab_batch = lab_batch.cpu()
 
-    # porta la batch predetta sulla cpu
+    # ports the predicted_lab_batch on the cpu
     predicted_lab_batch = predicted_lab_batch.cpu()
 
+    # visualizing the images
     rgb_batch = []
     predicted_rgb_batch = []
     for i in range(lab_batch.size(0)):
