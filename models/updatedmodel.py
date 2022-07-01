@@ -34,12 +34,12 @@ class updatedmodel(nn.Module):
       nn.ReLU(),
       nn.Dropout(0.5),
 
-      nn.Conv2d(64, 32, kernel_size=3, stride=1, padding=1),
+      nn.Conv2d(32, 32, kernel_size=3, stride=1, padding=1),
       nn.BatchNorm2d(32),
       nn.ReLU(),
       nn.Dropout(0.5),
       
-      nn.Conv2d(32, 2, kernel_size=3, stride=1, padding=1),
+      nn.Conv2d(32, 2, kernel_size=3, stride=1, padding=0),
       nn.ConvTranspose2d(2, 2, kernel_size=1, stride=1),
     )
 
